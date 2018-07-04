@@ -15,6 +15,11 @@
 <link rel="import" href="my-icons.html">
 
 <link rel="lazy-import" href="dapp-module1.html">
+<link rel="lazy-import" href="dapp-module2.html">
+<link rel="lazy-import" href="dapp-module3.html">
+
+<link rel="lazy-import" href="dapp-admin1.html">
+<link rel="lazy-import" href="dapp-bank.html">
 <link rel="lazy-import" href="dapp-view404.html">
 
 
@@ -79,6 +84,9 @@
             <a id="linkdapp1" name="module1" href="[[rootPath]]module1">철강회사</a>
             <a id="linkdapp2" name="module2" href="[[rootPath]]module2">건설회사</a> 
             <a id="linkdapp3" name="module3" href="[[rootPath]]module3">가전회사</a>
+            
+            <!-- <a name="admin1" href="[[rootPath]]admin1">어드민</a>
+            <a name="bank" href="[[rootPath]]bank">뱅크</a> -->
         </iron-selector>
       </app-drawer>
 
@@ -100,9 +108,13 @@
             fallback-selection="view404"
             role="main">
           <dapp-module1 name="module1"></dapp-module1>
+          <dapp-module2 name="module2"></dapp-module2>
+          <dapp-module3 name="module3"></dapp-module3>
+
           <!-- <dapp-module2 name="module2"></dapp-module2>
           <dapp-module3 name="module3"></dapp-module3> -->
-          
+          <dapp-admin1 name="admin1"></dapp-admin1>
+          <dapp-bank name="bank"></dapp-bank>
           <dapp-view404 name="view404"></dapp-view404>
         </iron-pages>
       </app-header-layout>

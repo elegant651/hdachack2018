@@ -1,0 +1,160 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+
+
+<dom-module id="dapp-bank">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      table {
+      	margin-top: 50px;
+      }
+
+      .command {
+      	float: right;
+      	margin-right: 100px;
+      }      
+
+      .command button {
+      	width: 120px;
+      	height: 45px;
+      	margin-bottom: 10px;
+      }
+
+     </style>
+
+     <p><span style="font-size: 18px;"><strong><span style="background-color: rgb(219, 255, 228);">은행 &nbsp; &nbsp; &nbsp;</span></strong>&nbsp;</span>
+    </p>
+    <table style="width: 100%;">
+      <tbody>
+        <tr>
+          <td style="width: 14.2857%; background-color: rgb(41, 105, 176);">
+            <div style="text-align: center;"><strong><span style="background-color: rgb(41, 105, 176); color: rgb(255, 255, 255);">계좌명</span></strong></div>
+          </td>
+          <td style="background-color: rgb(41, 105, 176); width: 14.5044%;">
+            <div style="text-align: center;"><span style="color: rgb(255, 255, 255);"><strong>법정화폐 잔고</strong></span></div>
+          </td>
+          <td style="background-color: rgb(41, 105, 176); width: 14.1511%;">
+            <div style="text-align: center;"><span style="color: rgb(255, 255, 255);"><strong>Hdac 잔고</strong></span></div>
+          </td>
+          <td style="width: 14.2857%; background-color: rgb(41, 105, 176);">
+            <div style="text-align: center;"><span style="color: rgb(255, 255, 255);"><strong>페어링 확인</strong></span></div>
+          </td>
+
+
+        </tr>
+        <tr>
+          <td style="width: 14.2857%; background-color: rgb(219, 240, 255);">철강회사
+            <br>
+          </td>
+          <td style="width: 14.5044%; background-color: rgb(219, 240, 255);">95
+            <br>
+          </td>
+          <td style="width: 14.1511%; background-color: rgb(219, 240, 255);">95
+            <br>
+          </td>
+          <td style="width: 14.2857%; background-color: rgb(219, 240, 255);" align=center>진행중/완료
+            <br>
+          </td>
+        </tr>
+            <tr>
+          <td style="width: 14.2857%; background-color: rgb(219, 240, 255);">건설회사
+            <br>
+          </td>
+          <td style="width: 14.5044%; background-color: rgb(219, 240, 255);">95
+            <br>
+          </td>
+          <td style="width: 14.1511%; background-color: rgb(219, 240, 255);">98
+            <br>
+          </td>
+          <td style="width: 14.2857%; background-color: rgb(219, 240, 255);" align=center>진행중/완료
+            <br>
+          </td>
+        </tr>
+            <tr>
+          <td style="width: 14.2857%; background-color: rgb(219, 240, 255);">가전회사
+            <br>
+          </td>
+          <td style="width: 14.5044%; background-color: rgb(219, 240, 255);">95
+            <br>
+          </td>
+          <td style="width: 14.1511%; background-color: rgb(219, 240, 255);">98
+            <br>
+          </td>
+          <td style="width: 14.2857%; background-color: rgb(219, 240, 255);" align=center>진행중/완료
+            <br>
+          </td>
+        </tr>
+      </tbody><br>
+
+  </table>
+
+
+    </template>  
+
+     <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class DappBank extends Polymer.Element {
+      static get is() { return 'dapp-bank'; }
+      static get properties() {
+        return {                    
+          info1: String,
+          info2: Number,
+          info3: Number,
+          
+        };
+      }
+
+      ready() {
+        super.ready();        
+        
+        
+      }
+     
+      
+
+      sendData(e) {        
+        let server_url = "/publish";
+
+        const result = "H-beam|1000|25|2.5|38|0";        
+
+        let formData = {
+          sname: "stream1",
+          key: "storekey",          
+          sdata: result
+        };
+
+        const that = this;
+        $.ajax({
+          url: server_url,          
+          data: formData,
+          type: 'POST',
+          xhrFields: {
+            withCredentials: true
+          },
+          success: function(result) {
+            console.log(result);
+            alert("스트림 전송이 완료되었습니다!");
+            
+            // location.href="/web/challenge-prob/s/"+that.routeData.probidx;
+          },
+          error: function(req, status, err){
+            alert("서버에 오류가 있습니다.");
+          }
+
+        });
+      }
+      
+     
+    }
+
+    window.customElements.define(DappBank.is, DappBank);
+  </script>
+</dom-module>

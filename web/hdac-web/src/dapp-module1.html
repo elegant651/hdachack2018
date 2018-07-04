@@ -43,6 +43,10 @@
         @apply(--layout-wrap);
 
         width: 700px;
+      }
+
+
+      h2 {
         margin-top: 65px;
       }
 
@@ -107,7 +111,8 @@
       </div>
     </div>
 
-    <div class="deliveryWrapper">
+    <h2>납품현황</h2>
+    <div class="deliveryWrapper">                
       <template is="dom-repeat" items="{{iotdatas}}">
         <div class="spot">
           <div class="dhead">[[_curIdx(index)]]</div>          

@@ -1,0 +1,289 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="dapp-module3">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      .btn {
+        width: 150px;
+        height: 50px;
+      }
+
+      .commandWrapper {
+        width: 100%;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        @apply(--layout-horizontal);
+      }
+
+      .flexWrapper {
+        @apply(--layout-flex);  
+      }
+
+      .commandWrapper .command {
+        margin-right: 15px;
+      }
+
+      .infoWrapper {
+        @apply(--layout-horizontal);
+      }
+
+      .infoWrapper .spot {
+        @apply(--layout-center);
+        width: 120px;
+      }
+
+      .deliveryWrapper {
+        @apply(--layout-horizontal);
+        @apply(--layout-wrap);
+
+        width: 700px;        
+      }
+
+      h2 {
+        margin-top: 65px;
+      }
+
+      .deliveryWrapper .spot {
+        width: 50px;
+      }
+    </style>
+
+    <iron-ajax id="ajaxCall" url="[[_getUrl(3)]]" handle-as="json" last-response="{{jsondata}}" on-response="handleDataResponse"></iron-ajax>    
+
+    <div class="commandWrapper">
+      <div class="title">가전회사</div>
+
+      <div class="flexWrapper"></div>
+
+      <div class="command">
+        <button id="btnUpdate" class="btn" on-click="getList">업데이트</button>
+        <button id="btnSend" class="btn" on-click="storeData">전송</button>
+        <button id="btnParing" class="btn" on-click="paring">페어링</button>
+      </div>
+    </div>
+
+    <div class="infoWrapper">
+      <div class="spot">
+        <div class="shead">품목</div>
+        <div class="desc">[[info1]]</div>
+      </div>
+
+      <div class="spot">
+        <div class="shead">총수량</div>
+        <div class="desc">[[info2]]</div>
+      </div>
+
+      <div class="spot">
+        <div class="shead">제품단가</div>
+        <div class="desc">[[info3]]</div>
+      </div>
+
+      <div class="spot">
+        <div class="shead">설치완료수량</div>
+        <div class="desc">[[info4]]</div>
+      </div>      
+
+      <div class="spot">
+        <div class="shead">총지급액</div>
+        <div class="desc">[[total]]</div>
+      </div>
+
+      <div class="spot">
+        <div class="shead">페어링</div>
+        <div class="desc">[[_computeState(curstate)]]</div>
+      </div>
+    </div>
+
+    <h2>설치현황</h2>
+    <div class="deliveryWrapper">          
+
+      <template is="dom-repeat" items="{{iotdatas}}">
+        <div class="spot">
+          <div class="dhead">[[_curIdx(index)]]</div>          
+          <div class="desc">[[item]]</div>  
+      </template>
+    </div>
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class DappModule3 extends Polymer.Element {
+      static get is() { return 'dapp-module3'; }
+      static get properties() {
+        return {
+          prop1: {
+            type: String,
+            value: 'hdac-web-app'
+          },
+          
+          iotdatas: Array,
+
+          jsondata: {
+            type: Object
+          },
+
+          curdata: String,
+          curstate: {
+            type: Number,
+            value: 0
+          },
+
+          total: Number
+        };
+      }
+
+      ready() {
+        super.ready();
+        
+        this.iotdatas = Array();
+        for(let i=0; i<40; i++){
+          if(i==5 || i==17){
+            this.iotdatas.push('X');
+          } else {
+            this.iotdatas.push('Y');
+          }         
+        }
+        
+      }
+
+
+      _curIdx(index) {
+        return index+1;
+      }
+
+      getList(e) {        
+        this.$.ajaxCall.generateRequest();
+      }
+
+      storeData(e) {
+
+        let server_url = "/publishData";
+
+        const sdata = {
+          completeamount: 98,
+          totalprice: this.total
+        };        
+
+        let formData = {
+          sname: "stream3",
+          stype: 3,          
+          sdata: JSON.stringify(sdata)
+        };
+
+        const that = this;
+        $.ajax({
+          url: server_url,          
+          data: formData,
+          type: 'POST',
+          xhrFields: {
+            withCredentials: true
+          },
+          success: function(result) {
+            console.log(result);
+            alert("스트림 전송이 완료되었습니다!");
+            
+            // location.href="/web/challenge-prob/s/"+that.routeData.probidx;
+          },
+          error: function(req, status, err){
+            alert("서버에 오류가 있습니다.");
+          }
+
+        });
+      }
+
+      paring(e) {
+        const server_url = "/sendcoin";
+        const amount = this.total;
+
+        const formData = {
+          amount: amount,
+          from: "HKfgk6Tpd8cMGHFTDyfDsGaT2ptyWwMw5s",
+          to: "HUqM5fK94HQM7pmz6XG9Vr6v2KFKQqmzNH"
+        }
+
+         const that = this;
+         $.ajax({
+          url: server_url,          
+          data: formData,
+          type: 'POST',
+          xhrFields: {
+            withCredentials: true
+          },
+          success: function(result) {
+            console.log(result);
+            alert("코인 전송이 완료되었습니다! : txhash: " + result.data);
+            
+            that.curstate = 1;
+          },
+          error: function(req, status, err){
+            alert("서버에 오류가 있습니다.");
+          }
+
+        });
+
+      }
+      
+
+      _getUrl(type){
+        const stream = "stream"+type;
+        // return "/listKeyItems/"+stream+"/"+key;
+        return "/getdata/"+stream;
+      }
+
+      handleDataResponse(d) {
+        const lastidx = d.detail.response.data.length-1;
+        const data = d.detail.response.data[lastidx];
+        const hexd = data.data;
+        // console.log(hexd);
+
+        this.curdata = this.hexToString(hexd);
+
+        const arr = this.curdata.split("|");
+        console.log(this.curdata);
+        this.info1 = arr[0];
+        this.info2 = arr[1];
+        this.info3 = arr[2];
+        this.info4 = arr[3];
+        // this.info5 = arr[4];
+        // this.info6 = arr[5];
+
+        this.total = 98;
+      }
+
+      hexToString (hex) {
+        let string = '';
+        for (let i = 0; i < hex.length; i += 2) {
+          string += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+        }
+        return string;
+      }
+
+      _computeTotalInfo1(a, b) {
+        return parseInt(a/b)
+      }
+
+      _computeTotalInfo2(a, b) {
+        return a*b;
+      }
+
+      _computeState(state){
+        if(state==0){
+          return "대기";
+        } else {
+          return "완료";
+        }
+      }
+    }
+
+    window.customElements.define(DappModule3.is, DappModule3);
+  </script>
+</dom-module>

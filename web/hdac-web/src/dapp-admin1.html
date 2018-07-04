@@ -1,0 +1,382 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+
+
+<dom-module id="dapp-admin1">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      table {
+      	margin-top: 50px;
+      }
+
+      .command {
+      	float: right;
+      	margin-right: 100px;
+      }      
+
+      .command button {
+      	width: 120px;
+      	height: 45px;
+      	margin-bottom: 10px;
+      }
+
+     </style>
+
+    <!-- <iron-ajax id="ajaxCall" url="[[_getUrl(1)]]" handle-as="json" last-response="{{jsondata}}" on-response="handleDataResponse" auto></iron-ajax>   
+ -->
+ 	<p><strong><span style="font-size: 18px; background-color: rgb(219, 255, 228);">철강회사 &nbsp; &nbsp; &nbsp;</span></strong>
+
+ 		<div class="command">
+ 			<button id="btnSend" class="btn" on-click="sendData">전송</button>
+	        <button id="btnUpdate" class="btn" on-click="getList">업데이트</button>	        
+    	</div>
+ 	</p>
+
+     <table style="width: 100%;">
+        <tbody>
+          <tr>
+            <td style="width: 14.2857%; background-color: rgb(41, 105, 176);">
+              <div style="text-align: center;"><strong><span style="background-color: rgb(41, 105, 176); color: rgb(255, 255, 255);">품목</span></strong></div>
+            </td>
+            <td style="background-color: rgb(41, 105, 176); width: 14.5044%;">
+              <div style="text-align: center;"><span style="color: rgb(255, 255, 255);"><strong>총수량</strong></span></div>
+            </td>
+            <td style="background-color: rgb(41, 105, 176); width: 14.1511%;">
+              <div style="text-align: center;"><span style="color: rgb(255, 255, 255);"><strong>단위수량</strong></span></div>
+            </td>
+            <td style="width: 14.2857%; background-color: rgb(41, 105, 176);">
+              <div style="text-align: center;"><span style="color: rgb(255, 255, 255);"><strong>총납품회수</strong></span></div>
+            </td>
+            <td style="width: 14.2857%; background-color: rgb(41, 105, 176);">
+              <div style="text-align: center;"><span style="color: rgb(255, 255, 255);"><strong>분할지급액</strong></span></div>
+            </td>
+            <td style="width: 14.2857%; background-color: rgb(250, 197, 28);">
+              <div style="text-align: center;"><strong>납품완료횟수</strong></div>
+            </td>
+            <td style="width: 14.2857%; background-color: rgb(250, 197, 28);">
+              <div style="text-align: center;"><strong>총지급액</strong></div>
+            </td>
+          </tr>
+          <tr>
+            <td style="width: 14.2857%; background-color: rgb(219, 240, 255);">
+              <br>
+              [[info1]]
+            </td>
+            <td style="width: 14.5044%; background-color: rgb(219, 240, 255);">
+              <br>
+              [[info2]]
+            </td>
+            <td style="width: 14.1511%; background-color: rgb(219, 240, 255);">
+              <br>
+              [[info3]]
+            </td>
+            <td style="width: 14.2857%; background-color: rgb(219, 240, 255);">
+              <br>
+              [[_computeTotalInfo1(info2, info3)]]
+            </td>
+            <td style="width: 14.2857%; background-color: rgb(219, 240, 255);">
+              <br>
+              [[info4]]
+            </td>
+            <td style="width: 14.2857%; background-color: rgb(255, 242, 191);">
+              <br>
+              [[info5]]
+            </td>
+            <td style="width: 14.2857%; background-color: rgb(255, 242, 191);">
+              <br>
+              [[_computeTotalInfo2(info4, info5)]]
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <p>
+        <br>
+      </p>
+      
+      <p><strong><span style="font-size: 18px; background-color: rgb(219, 255, 228);">건설회사 &nbsp; &nbsp; &nbsp;</span></strong>
+
+        <div class="command">
+          <button id="btnSend2" class="btn" on-click="sendData2">전송</button>
+              <button id="btnUpdate2" class="btn" on-click="getList2">업데이트</button>         
+        </div>
+      </p>
+      
+      <table style="width: 100%;">
+        <tbody>
+          <tr>
+            <td style="width: 16.6667%; text-align: center; background-color: rgb(41, 105, 176);"><span style="color: rgb(255, 255, 255);"><strong>총면적</strong></span></td>
+            <td style="width: 16.6667%; text-align: center; background-color: rgb(41, 105, 176);"><span style="color: rgb(255, 255, 255);"><strong>단위면적</strong></span></td>
+            <td style="width: 16.6667%; text-align: center; background-color: rgb(41, 105, 176);"><span style="color: rgb(255, 255, 255);"><strong>총분할회수</strong></span></td>
+            <td style="width: 16.6667%; background-color: rgb(41, 105, 176);">
+              <div style="text-align: center;"><span style="color: rgb(255, 255, 255);"><strong>분할 지급액</strong></span></div>
+            </td>
+            <td style="width: 16.6667%; background-color: rgb(250, 197, 28);">
+              <div style="text-align: center;"><strong>공사완료면적</strong></div>
+            </td>
+            <td style="width: 16.6667%; background-color: rgb(250, 197, 28);">
+              <div style="text-align: center;"><strong>총지급액</strong></div>
+            </td>
+          </tr>
+          <tr>
+            <td style="width: 16.6667%; background-color: rgb(219, 240, 255);">
+              <br>
+              [[info7]]
+            </td>
+            <td style="width: 16.6667%; background-color: rgb(219, 240, 255);">
+              <br>
+              [[info8]]
+            </td>
+            <td style="width: 16.6667%; background-color: rgb(219, 240, 255);">
+              <br>
+              20
+            </td>
+            <td style="width: 16.6667%; background-color: rgb(219, 240, 255);">
+              <br>
+              [[info9]]
+            </td>
+            <td style="width: 16.6667%; background-color: rgb(255, 242, 191);">
+              <br>
+              [[info10]]
+            </td>
+            <td style="width: 16.6667%; background-color: rgb(255, 242, 191);">
+              <br>
+              [[info11]]
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <p>
+        <br>
+      </p>
+      
+      <p><span style="font-size: 18px;"><strong><span style="background-color: rgb(219, 255, 228);">가전회사 &nbsp; &nbsp; &nbsp;</span></strong>&nbsp;</span>
+
+        <div class="command">
+          <button id="btnSend3" class="btn" on-click="sendData3">전송</button>
+            <button id="btnUpdate3" class="btn" on-click="getList3">업데이트</button>         
+        </div>
+      </p>
+      
+      <table style="width: 100%;">
+        <tbody>
+          <tr>
+            <td style="width: 20%; background-color: rgb(41, 105, 176);">
+              <div style="text-align: center;"><strong><span style="color: rgb(255, 255, 255);">품목</span></strong></div>
+            </td>
+            <td style="width: 20%; background-color: rgb(41, 105, 176);">
+              <div style="text-align: center;"><span style="color: rgb(255, 255, 255);"><strong>총수량</strong></span></div>
+            </td>
+            <td style="width: 20%; background-color: rgb(41, 105, 176);">
+              <div style="text-align: center;"><strong><span style="color: rgb(255, 255, 255);">제품단가</span></strong></div>
+            </td>
+            <td style="width: 20%; background-color: rgb(250, 197, 28); text-align: center;"><strong>설치완료수량</strong></td>
+            <td style="width: 20%; background-color: rgb(250, 197, 28); text-align: center;"><strong>총지급액</strong></td>
+          </tr>
+          <tr>
+            <td style="width: 20%; background-color: rgb(219, 240, 255);">
+              <br>
+              [[info12]]
+            </td>
+            <td style="width: 20%; background-color: rgb(219, 240, 255);">
+              <br>
+              [[info13]]
+            </td>
+            <td style="width: 20%; background-color: rgb(219, 240, 255);">
+              <br>
+              [[info14]]
+            </td>
+            <td style="width: 20%; background-color: rgb(255, 242, 191);">
+              <br>
+              [[info15]]
+            </td>
+            <td style="width: 20%; background-color: rgb(255, 242, 191);">
+              <br>
+              [[info16]]
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+
+    </template>  
+
+     <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class DappAdmin1 extends Polymer.Element {
+      static get is() { return 'dapp-admin1'; }
+      static get properties() {
+        return {                    
+          //////1
+          info1: String,
+          info2: Number,
+          info3: Number,
+          info4: Number,
+          info5: Number,
+
+          /////2
+          info7: Number,
+          info8: Number,
+          info9: Number,
+          info10: Number,
+          info11: Number,
+
+          //////3
+          info12: String,
+          info13: Number,
+          info14: Number,
+          info15: Number,
+          info16: Number
+        };
+      }
+
+      ready() {
+        super.ready();        
+        
+        this.info1 = "h-beam";
+        this.info2 = 1000;
+        this.info3 = 25;
+        this.info4 = 2.5;
+        this.info5 = 0;
+
+        this.info7 = 1000;
+        this.info8 = 50;
+        this.info9 = 2.5;
+
+
+        this.info12 = "smart_refrigerator";
+        this.info13 = 100;
+        this.info14 = 1;
+
+      }
+     
+      /* for module1 */
+      getList(e) {        
+        // this.$.ajaxCall.generateRequest();
+        this.info5 = 38;        
+      }
+
+      sendData(e) {        
+        let server_url = "/publish";
+
+        const result = "H-beam|1000|25|2.5|38|0";        
+
+        let formData = {
+          sname: "stream1",
+          key: "storekey",          
+          sdata: result
+        };
+
+        const that = this;
+        $.ajax({
+          url: server_url,          
+          data: formData,
+          type: 'POST',
+          xhrFields: {
+            withCredentials: true
+          },
+          success: function(result) {
+            console.log(result);
+            alert("스트림 전송이 완료되었습니다!");
+            
+            // location.href="/web/challenge-prob/s/"+that.routeData.probidx;
+          },
+          error: function(req, status, err){
+            alert("서버에 오류가 있습니다.");
+          }
+
+        });
+      }
+
+      _computeTotalInfo1(a, b) {
+        return parseInt(a/b)
+      }
+
+      _computeTotalInfo2(a, b) {
+        return a*b;
+      }
+
+
+      getList2(e) {
+        this.info10 = 900;
+        this.info11 = 95;
+      }
+
+      sendData2(e) {      
+        let server_url = "/publish";
+
+        const result = "1000|50|2.5|900|0";        
+
+        let formData = {
+          sname: "stream2",
+          key: "storekey",          
+          sdata: result
+        };
+
+        const that = this;
+        $.ajax({
+          url: server_url,          
+          data: formData,
+          type: 'POST',
+          xhrFields: {
+            withCredentials: true
+          },
+          success: function(result) {
+            console.log(result);
+            alert("스트림 전송이 완료되었습니다!");                        
+          },
+          error: function(req, status, err){
+            alert("서버에 오류가 있습니다.");
+          }
+
+        });
+      }
+     
+      getList3(e) {
+        this.info15 = 98;
+        this.info16 = 98;
+      }
+
+      sendData3(e) {      
+        let server_url = "/publish";
+
+        const result = "smart_refrigerator|100|1|98|0";        
+
+        let formData = {
+          sname: "stream3",
+          key: "storekey",          
+          sdata: result
+        };
+
+        const that = this;
+        $.ajax({
+          url: server_url,          
+          data: formData,
+          type: 'POST',
+          xhrFields: {
+            withCredentials: true
+          },
+          success: function(result) {
+            console.log(result);
+            alert("스트림 전송이 완료되었습니다!");                        
+          },
+          error: function(req, status, err){
+            alert("서버에 오류가 있습니다.");
+          }
+
+        });
+      }
+    }
+
+    window.customElements.define(DappAdmin1.is, DappAdmin1);
+  </script>
+</dom-module>
