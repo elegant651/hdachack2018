@@ -1,0 +1,6 @@
+{
+  "name": "hdac-web",
+  "short_name": "hdac-web",
+  "start_url": "/",
+  "display": "standalone"
+}

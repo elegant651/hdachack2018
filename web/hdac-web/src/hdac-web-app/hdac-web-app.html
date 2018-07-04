@@ -1,0 +1,195 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="hdac-web-app">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      .commandWrapper {
+        width: 100%;
+        @apply(--layout-horizontal);
+      }
+
+      .flexWrapper {
+        @apply(--layout-flex);  
+      }
+
+      .commandWrapper .command {
+        margin-right: 15px;
+      }
+
+      .infoWrapper {
+        @apply(--layout-horizontal);
+      }
+
+      .infoWrapper .spot {
+        @apply(--layout-center);
+        width: 120px;
+      }
+
+      .deliveryWrapper {
+        @apply(--layout-horizontal);
+
+        margin-top: 25px;
+      }
+
+      .deliveryWrapper .spot {
+        width: 50px;
+      }
+    </style>
+
+    <iron-ajax id="ajaxCall" url="[[_getUrl(curkey)]]" handle-as="json" last-response="{{jsondata}}"></iron-ajax>
+
+    <h2>엘리스 컴퍼니</h2>
+
+    <div class="commandWrapper">
+      <div class="title">철강회사</div>
+
+      <div class="flexWrapper"></div>
+
+      <div class="command">
+        <button id="btnUpdate" class="btn" on-click="getList">업데이트</button>
+        <button id="btnSend" class="btn" on-click="storeData">전송</button>
+        <button id="btnParing" class="btn" on-click="paring">페어링</button>
+      </div>
+    </div>
+
+    <div class="infoWrapper">
+      <div class="spot">
+        <div class="shead">품목</div>
+        <div class="desc">H빔</div>
+      </div>
+
+      <div class="spot">
+        <div class="shead">총수량</div>
+        <div class="desc">1000</div>
+      </div>
+
+      <div class="spot">
+        <div class="shead">단위수량</div>
+        <div class="desc">25</div>
+      </div>
+
+      <div class="spot">
+        <div class="shead">총납품횟수</div>
+        <div class="desc">40</div>
+      </div>
+
+      <div class="spot">
+        <div class="shead">분할지급액</div>
+        <div class="desc">2.5</div>
+      </div>
+
+      <div class="spot">
+        <div class="shead">납품완료횟수</div>
+        <div class="desc">38</div>
+      </div>
+
+      <div class="spot">
+        <div class="shead">총지급액</div>
+        <div class="desc">95</div>
+      </div>
+
+      <div class="spot">
+        <div class="shead">페어링</div>
+        <div class="desc">대기/완료</div>
+      </div>
+    </div>
+
+    <div class="deliveryWrapper">
+      <template is="dom-repeat" items="{{results}}">
+        <div class="spot">
+          <div class="dhead">[[_curIdx(index)]]</div>          
+          <div class="desc">[[item]]</div>  
+      </template>
+    </div>
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class HdacWebApp extends Polymer.Element {
+      static get is() { return 'hdac-web-app'; }
+      static get properties() {
+        return {
+          prop1: {
+            type: String,
+            value: 'hdac-web-app'
+          },
+
+          curkey: {
+            type: String,
+            value: 'test1'
+          },
+          results: Array,
+
+          jsondata: {
+            type: Object
+          }
+        };
+      }
+
+      ready() {
+        super.ready();
+        
+        this.results = ['Y','X','Y','Y'];
+      }
+
+      _curIdx(index) {
+        return index+1;
+      }
+
+      getList(e) {
+        this.curkey = 'test1';
+        this.$.ajaxCall.generateRequest();
+      }
+
+      storeData(e) {
+        let server_url = "/publish";
+
+        let formData = {
+          sname: "test",
+          key: "test1",
+          sdata: JSON.stringify(results)
+        };
+
+        const that = this;
+        $.ajax({
+          url: server_url,          
+          data: formData,
+          type: 'POST',
+          xhrFields: {
+            withCredentials: true
+          },
+          success: function(result) {
+            console.log(result);
+            alert("스트림 전송이 완료되었습니다!");
+            
+            // location.href="/web/challenge-prob/s/"+that.routeData.probidx;
+          },
+          error: function(req, status, err){
+            alert("서버에 오류가 있습니다.");
+          }
+
+        });
+      }
+
+      paring(e) {
+
+      }
+
+      _getUrl(key){
+        const stream = "test";
+        return "/listKeyItems/"+stream+"/"+key;
+      }
+    }
+
+    window.customElements.define(HdacWebApp.is, HdacWebApp);
+  </script>
+</dom-module>
