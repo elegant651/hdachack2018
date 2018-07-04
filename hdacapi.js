@@ -82,8 +82,8 @@ module.exports = (app, chain) => {
 			stream: sname,
 			key: "statekey",
 			data: new Buffer(result).toString("hex")
-		}).then(() => {
-			res.json({"flag": 1});
+		}).then((hexstring) => {
+			res.json({"flag": 1, "data": hexstring});
 		}).catch((err) => {
 			console.error(JSON.stringify(err));
 			res.json({"flag": 0});
@@ -114,6 +114,29 @@ module.exports = (app, chain) => {
 		});
 	});
 
+
+	app.post('/sendcoin', (req, res) => {
+		const amount = req.body.amount;
+		const from = req.body.from;
+		const to = req.body.to;		
+		
+		chain.sendFromAddress({
+    		from: from,
+    		to: to,
+    		amount: {
+        		"": parseInt(amount)
+    		}
+		}).then(txid => {
+			console.log(txid);
+			res.json({"flag": 1, "data": txid});
+		}).catch((err) => {
+			console.error(JSON.stringify(err));
+			res.json({"flag": 0});
+		});
+	});
+
+
+	/* ref */
 	app.get('/listKeys/:sname', (req, res) => {
 		const sname = req.params.sname;
 

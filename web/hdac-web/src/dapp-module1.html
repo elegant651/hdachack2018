@@ -40,8 +40,10 @@
 
       .deliveryWrapper {
         @apply(--layout-horizontal);
+        @apply(--layout-wrap);
 
-        margin-top: 25px;
+        width: 700px;
+        margin-top: 65px;
       }
 
       .deliveryWrapper .spot {
@@ -101,7 +103,7 @@
 
       <div class="spot">
         <div class="shead">페어링</div>
-        <div class="desc">[[_computeState(info6)]]</div>
+        <div class="desc">[[_computeState(curstate)]]</div>
       </div>
     </div>
 
@@ -134,14 +136,26 @@
             type: Object
           },
 
-          curdata: String          
+          curdata: String,
+          curstate: {
+            type: Number,
+            value: 0
+          }
         };
       }
 
       ready() {
         super.ready();
         
-        this.iotdatas = ['Y','X','Y','Y'];
+        this.iotdatas = Array();
+        for(let i=0; i<40; i++){
+          if(i==5 || i==17){
+            this.iotdatas.push('X');
+          } else {
+            this.iotdatas.push('Y');
+          }         
+        }
+        
       }
 
 
@@ -194,7 +208,35 @@
       }
 
       paring(e) {
-        
+        const server_url = "/sendcoin";
+        const amount = parseInt(this.info4*this.info5)
+
+        const formData = {
+          amount: amount,
+          from: "HKfgk6Tpd8cMGHFTDyfDsGaT2ptyWwMw5s",
+          to: "HE7Pe5QgW8VCmbJwV1VNCqWaXsqGUNyG66"
+        }
+
+         const that = this;
+         $.ajax({
+          url: server_url,          
+          data: formData,
+          type: 'POST',
+          xhrFields: {
+            withCredentials: true
+          },
+          success: function(result) {
+            console.log(result);
+            alert("코인 전송이 완료되었습니다! : txhash: " + result.data);
+            
+            that.curstate = 1;
+          },
+          error: function(req, status, err){
+            alert("서버에 오류가 있습니다.");
+          }
+
+        });
+
       }
 
       paringOld(e) {
@@ -253,7 +295,7 @@
         this.info3 = arr[2];
         this.info4 = arr[3];
         this.info5 = arr[4];
-        this.info6 = arr[5];
+        // this.info6 = arr[5];
       }
 
       hexToString (hex) {
