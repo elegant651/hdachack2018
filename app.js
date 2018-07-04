@@ -33,6 +33,53 @@ function respCorsHeader(req,res) {
 	return res;
 }
 
+app.use(express.static(__dirname + '/web'));
+
+app.get('/web/*', (req, res) => {
+	var options = {
+		root: __dirname + '/web/hdac-web',  
+		/* es5 polymer build 위해 */
+		// root: __dirname + '/tinaeng-web/build/es5',
+		dotfiles: 'deny',
+		headers: {
+			'x-timestamp': Date.now(),
+			'x-sent': true
+		}
+	};
+	res.sendFile("./index.html", options, function(err) {
+		if (err) {
+			console.log(err);
+			res.status(err.status).end();
+		}
+		else {
+			console.log('web');
+		}
+	});
+})
+
+// app.use('/web', express.static(__dirname + '/web/hdac-web'));
+// app.get('/web/*', function (req, res) {		
+				
+// 	var options = {
+// 		root: __dirname + '/web/',
+// 		dotfiles: 'deny',
+// 		headers: {
+// 			'x-timestamp': Date.now(),
+// 			'x-sent': true
+// 		}
+// 		};
+// 	res.sendFile("./index.html", options, function(err) {
+// 		if (err) {
+// 			console.log(err);
+// 			res.status(err.status).end();
+// 		}
+// 		else {
+// 			console.log('web/hdac-web');
+// 		}
+// 	});
+// });
+
+
 let multichain = require('multichain-node')({
 	port: key.port,
 	host: key.host,

@@ -59,6 +59,61 @@ module.exports = (app, chain) => {
 		})
 	});
 
+	app.post('/publishData', (req, res) => {
+		const sname = req.body.sname;		
+		const sdata = req.body.sdata;
+		const stype = req.body.stype;
+
+		const sobj = JSON.parse(sdata);
+
+		let result = "";
+		//serializing
+		Object.keys(sobj).forEach((key) => {
+			console.log(key +"/"+ sobj[key]);
+			const skey = key;
+			const sval = sobj[key];
+			
+			result += sval + "|";
+		});
+
+		// sname = "stream"+stype;
+
+		chain.publish({
+			stream: sname,
+			key: "statekey",
+			data: new Buffer(result).toString("hex")
+		}).then(() => {
+			res.json({"flag": 1});
+		}).catch((err) => {
+			console.error(JSON.stringify(err));
+			res.json({"flag": 0});
+		})			
+		
+	});
+
+
+	app.get('/getdata/:sname', (req, res) => {
+		const sname = req.params.sname;
+
+		chain.subscribe({
+			stream: sname
+		}).then(() => {
+			chain.listStreamKeyItems({
+				stream: sname,
+				key: "storekey",
+				verbose: true
+			}).then(streamKeyItems => {
+				res.json({"flag":1, "data": streamKeyItems});
+			}).catch((err) => {
+				console.error(JSON.stringify(err));
+				res.json({"flag": 0});
+			})
+		}).catch(e => {
+			console.error("e:"+JSON.stringify(e));
+			res.json({"flag": 0});
+		});
+	});
+
 	app.get('/listKeys/:sname', (req, res) => {
 		const sname = req.params.sname;
 
@@ -76,7 +131,7 @@ module.exports = (app, chain) => {
 		const sname = req.params.sname;
 		const key = req.params.key;
 
-		multichain.subscribe({
+		chain.subscribe({
 			stream: sname
 		}).then(() => {
 			chain.listStreamKeyItems({
